@@ -28,7 +28,8 @@
 #' @param tol A positive number. Tolerance/precision of the optimization algorithm when finding the endpoints of the confidence
 #' interval.
 #' @param verbose A logical. If TRUE, print intermediate information of the computation.
-#'
+#' @param xtol_rel A real number. Control the tolerance when finding the optimum of log-likelihood.
+#' @param maxeval An integer. Control the max iterations when finding the optimum of log-likelihood.
 #' @return (1 - alpha) confidence interval for the population size
 #' @export
 #' @examples
@@ -43,7 +44,7 @@ ci.pl= function(mem_list, restriction_type = "pairwise",
                          alpha = 0.05, gamma = 0.3, r_cond = c(1, 1, 2), t_cond = c(2, 3, 3),
                          eta_cond = c(0.1, 0.1, 0.1), xi_cond = c(10, 10, 10),
                          lb = 0.3, ub = 100, tol = 1e-6,
-                         verbose = F, ...){
+                         verbose = F, xtol_rel = 1e-3, maxeval = 300, ...){
   # need to vary lb and ub to avoid local minimum, to let ub not be too large.
   # pair, ub = 20; high, ub = 60
   # the run time is very long (5 minutes for one CI, especially for pairwise)
@@ -102,11 +103,11 @@ ci.pl= function(mem_list, restriction_type = "pairwise",
     lb <- rep(0.1, c)
     ub <- rep(100*sum(N), c)
     local_opts <- list( "algorithm" = "NLOPT_LD_MMA",
-                        "xtol_rel" = 1.0e-6 )
+                        "xtol_rel" = xtol_rel ) # 1.0e-6
 
     opts <- list( "algorithm" = "NLOPT_LD_AUGLAG", # only one that can deal with init value out of bound
-                  "xtol_rel" = 1.0e-6,
-                  "maxeval" = 2000, # good amount of iterations, to make sure point-id parameters will be estimated with precision.
+                  "xtol_rel" = xtol_rel, # 1.0e-6
+                  "maxeval" = maxeval, # good amount of iterations, to make sure point-id parameters will be estimated with precision, e.g. 2000.
                   "local_opts" = local_opts, "print_level" = 0, "check_derivatives" = F )
 
     res <- nloptr::nloptr( x0=m_init,
@@ -163,11 +164,11 @@ ci.pl= function(mem_list, restriction_type = "pairwise",
     lb <- rep(0.1, c)
     ub <- rep(100*sum(N), c)
     local_opts <- list( "algorithm" = "NLOPT_LD_MMA",
-                        "xtol_rel" = 1.0e-6 )
+                        "xtol_rel" = xtol_rel ) # 1e-6
 
     opts <- list( "algorithm" = "NLOPT_LD_AUGLAG", # only one that can deal with init value out of bound
-                  "xtol_rel" = 1.0e-6,
-                  "maxeval" = 2000,
+                  "xtol_rel" = xtol_rel,
+                  "maxeval" = maxeval,
                   "local_opts" = local_opts, "print_level" = 0, "check_derivatives" = F )
 
     res <- nloptr::nloptr( x0=m_init,
@@ -232,10 +233,11 @@ ci.pl= function(mem_list, restriction_type = "pairwise",
   x0 = lb
   x1 = center
   # tol = 1e-1
+  print("Finding left endpoint of confidence interval using bisection...")
   while (abs(x0 - x1) > tol){
     x = (x0 + x1)/2
     obj_tmp = eval_l(x)
-    print(c(x, obj_tmp))
+    if (verbose) {cat("Current Value, Current, Objective: ", x, obj_tmp, "\n")}
     if (obj_tmp <= obj_real + qchisq(1 - alpha, 1)/2){
       x1 = x
     } else{
@@ -250,10 +252,11 @@ ci.pl= function(mem_list, restriction_type = "pairwise",
   x0 = center
   x1 = ub
   # tol = 1e-1
+  print("Finding right endpoint of confidence interval using bisection...")
   while (abs(x0 - x1) > tol){
     x = (x0 + x1)/2
     obj_tmp = eval_l(x)
-    print(c(x, obj_tmp))
+    if (verbose) {cat("Current Value, Current, Objective: ", x, obj_tmp, "\n")}
     if (obj_tmp <= obj_real + qchisq(1 - alpha, 1)/2){
       x0 = x
     } else{
@@ -262,7 +265,7 @@ ci.pl= function(mem_list, restriction_type = "pairwise",
   }
   CI_ub = x1
   CI = c(CI_lb, CI_ub)
-  print(CI)
+  cat("1-",alpha, " confidence interval:", CI, "\n")
   if (close_val(CI_lb, lb)) {warning("Decrease lower bound (CI)!")}
   if (close_val(CI_ub, ub)) {warning("Increase upper bound (CI)!")}
   # if (compute_ID){return(c(ID, CI))} else {return(CI)}

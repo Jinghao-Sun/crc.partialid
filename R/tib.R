@@ -254,13 +254,14 @@ ci.tib = function(mem_list, restriction_type = "pairwise", alpha = 0.05,
   while (!phi_function(obs_sum * lb)){lb = lb/2}
   if (restriction_type == "pairwise") {while (!phi_function(obs_sum * ub)){ub = ub*2}} # will this work?
   # get left end of CI
-  if (verbose) print("start left")
+  print("Finding left endpoint of confidence interval using bisection...")
   lower_left = obs_sum * lb
   # upper_left = set_estimate[1]
   upper_left = M_middle
   while ((upper_left - lower_left) > tol){
-    if (verbose) print(c(lower_left, upper_left))
+    # if (verbose) print(c(lower_left, upper_left))
     M = mean(c(upper_left, lower_left))
+    # if (verbose) print(M)
     phi = phi_function(M)
     if (phi == 1){
       lower_left = M
@@ -276,13 +277,14 @@ ci.tib = function(mem_list, restriction_type = "pairwise", alpha = 0.05,
   if (restriction_type == "highest") {
     CI_right = Inf
   } else {
-    if (verbose) print("start right")
+    print("Finding right endpoint of confidence interval using bisection...")
     lower_right =  M_middle
     # upper_left = set_estimate[1]
     upper_right = obs_sum * ub
     while ((upper_right - lower_right) > tol){
-      if (verbose) print(c(lower_right, upper_right))
+      # if (verbose) print(c(lower_right, upper_right))
       M = mean(c(upper_right, lower_right))
+      # if (verbose) print(M)
       phi = phi_function(M)
       if (phi == 1){
         upper_right = M
@@ -295,7 +297,8 @@ ci.tib = function(mem_list, restriction_type = "pairwise", alpha = 0.05,
 
   CI = c(CI_left, CI_right)
   # if (verbose) cat("Set estimate: ", set_estimate, "\n")
-  if (verbose) cat("CI", CI, "\n")
+  # if (verbose) cat("CI", CI, "\n")
+  cat("1 -",alpha, " confidence interval:", CI, "\n")
   if (CI_left > CI_right){
     CI = c(-1, -1)
   }
