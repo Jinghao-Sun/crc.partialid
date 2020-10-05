@@ -50,7 +50,7 @@ print(PWID)
 ### Interval estimates for PWID population size
 
 - Suppose from empirical knowledge, one assumes that the pairwise dependence (odds ratio) between samples (1, 2), (1, 3) and (2, 3) are all between 1 and 5. Then we can encode the above constraints with the following conditions: 
-``` r
+``` {r}
 r_cond = c(1, 1, 2)
 t_cond = c(2, 3, 3)
 eta_cond = c(1, 1, 1)
@@ -58,7 +58,7 @@ xi_cond = c(5, 5, 5)
 ```
 
 We can use *ci.tib* or *ci.pl* to compute 95% (i.e., 1 - alpha) confidence intervals under such constraints. (For the difference of these two methods, see the [methodology paper](https://arxiv.org/abs/2008.00127).) For example,
-``` r
+``` {r}
 CITIB = ci.tib(PWID, restriction_type = "pairwise", alpha = 0.05, r_cond = r_cond, 
        t_cond = t_cond, eta_cond = eta_cond, xi_cond = xi_cond, B = 500,
        lb = 0.5, ub = 10, tol = 1, search_step = 30, tasks = -1, verbose = TRUE)
@@ -105,13 +105,16 @@ Citizens from MOE-countries Residing in the Netherlands. Reporting Estimations
 ```{r}
 print(Polish)
 ```
+Considering the Odds Ratio between 2 samples are between 0.5 and 2. Then the parameter gamma is log(2) in function *ci.tib* and *ci.pl*.
 
 ``` {r}
-# CITIB = ci.tib(Polish, restriction_type = "highest", gamma = 0.1, alpha = 0.05, B = 500,lb = 0.5, ub = 60, tol = 1e-3, search_step = 30, tasks = 2, verbose = TRUE)
+# CITIB = ci.tib(Polish, restriction_type = "highest", gamma = 0.1, alpha = 0.05, 
+#               B = 500,lb = 0.5, ub = 60, tol = 1e-3, search_step = 30, 
+#               tasks = 2, verbose = TRUE)
 
-CIPL = ci.pl(Polish, restriction_type = "highest", gamma = log(2), lb = 0.05, ub = 60, tol = 1e-3, xtol_rel = 1e-3, maxeval = 300, verbose = TRUE)
+CIPL = ci.pl(Polish, restriction_type = "highest", gamma = log(2), lb = 0.05, 
+             ub = 60, tol = 1e-3, xtol_rel = 1e-3, maxeval = 300, verbose = TRUE)
 ```
-
 
 ## Remarks
 

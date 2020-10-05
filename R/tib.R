@@ -37,15 +37,19 @@
 #' @return (1 - alpha) confidence interval for the population size
 #' @export
 #' @examples
-
-#' CI = ci.tib(mem_list, restriction_type = "pairwise",eta_cond = c(0.5, 0.5, 0.5),
-#' xi_cond = c(4, 4, 4), B = 100,
-#' lb = 0.5, ub = 10, tol = 1e-2,
-#' search_step = 30, tasks = 2, verbose = TRUE)
+#' r_cond = c(1, 1, 2)
+#' t_cond = c(2, 3, 3)
+#' eta_cond = c(1, 1, 1)
+#' xi_cond = c(5, 5, 5)
+#' CIPL = ci.pl(PWID, restriction_type = "pairwise", alpha = 0.05, r_cond = r_cond,
+#' t_cond = t_cond, eta_cond = eta_cond, xi_cond = xi_cond, lb = 0.5,
+#' ub = 10, tol = 1, verbose = TRUE, xtol_rel = 1e-3, maxeval = 300)
 #'
-#' CI = ci.tib(mem_list, restriction_type = "highest", B = 500, gamma = 0.05,
-#' lb = 0.5, ub = 20, tol = 1e-3,
-#' search_step = 30, tasks = 2, verbose = TRUE)
+#' CITIB = ci.tib(PWID, restriction_type = "highest", gamma = 0.1, alpha = 0.05,
+#' B = 500,lb = 0.5, ub = 60, tol = 1e-3, search_step = 30, tasks = 2, verbose = TRUE)
+#'
+#' CITIB = ci.tib(Polish, restriction_type = "highest", gamma = 0.1, alpha = 0.05,
+#' B = 500,lb = 0.5, ub = 60, tol = 1e-3, search_step = 30, tasks = 2, verbose = TRUE)
 
 
 

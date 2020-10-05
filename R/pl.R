@@ -33,11 +33,16 @@
 #' @return (1 - alpha) confidence interval for the population size
 #' @export
 #' @examples
-
-#' CI = ci.pl(mem_list, restriction_type = "highest", gamma = 0.05, lb = 0.5, ub = 60, tol = 1e-3)
+#' r_cond = c(1, 1, 2)
+#' t_cond = c(2, 3, 3)
+#' eta_cond = c(1, 1, 1)
+#' xi_cond = c(5, 5, 5)
+#' CIPL = ci.pl(PWID, restriction_type = "pairwise", alpha = 0.05, r_cond = r_cond,
+#' t_cond = t_cond, eta_cond = eta_cond, xi_cond = xi_cond, lb = 0.5,
+#' ub = 10, tol = 1, verbose = TRUE, xtol_rel = 1e-3, maxeval = 300)
 #'
-#' CI = ci.pl(mem_list, restriction_type = "pairwise", eta_cond = c(0.5, 0.5, 0.5),
-#' xi_cond = c(5, 5, 5), lb = 0.5, ub = 30, tol = 1e-3)
+#' CIPL = ci.pl(PWID, restriction_type = "highest", gamma = 0.1, lb = 0.05, ub = 60,
+#' tol = 1e-3, xtol_rel = 1e-3, maxeval = 300, verbose = TRUE)
 
 
 ci.pl= function(mem_list, restriction_type = "pairwise",

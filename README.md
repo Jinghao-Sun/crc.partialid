@@ -25,12 +25,7 @@ from [GitHub](https://github.com/) with:
 devtools::install_github("Jinghao-Sun/crc.partialid")
 ```
 
-## Example 1
-
-This is a basic example which shows you how to estimate the population
-size with **crc.partialid**.
-
-### Import Data
+## Example: People Who Inject Drugs (PWID) in Brussels, Belgium
 
 We use 3 capture samples of People Who Inject Drugs (PWID) in Brussels,
 Belgium, to estimate the total population size of PWID in Brusells. See
@@ -38,6 +33,8 @@ Belgium, to estimate the total population size of PWID in Brusells. See
 and Luk Van Baelen. How many people injected drugs over the last 12
 months in Belgium? Estimates based on a capture-recapture and multiplier
 method. Working Paper, 2020.\]
+
+### Import Data
 
 The format of the data needs to be a data.frame or tibble that contains
 aggregated capture histories. For a CRC study with k samples, the
@@ -48,7 +45,7 @@ sample), and the last column is the frequency.
 
 ``` r
 library(crc.partialid)
-print(mem_list)
+print(PWID)
 #>   Fieldwork_study Low_threshold Crisis_intervention   N
 #> 1               1             0                   0  89
 #> 2               1             1                   0  24
@@ -81,59 +78,38 @@ these two methods, see the [methodology
 paper](https://arxiv.org/abs/2008.00127).) For example,
 
 ``` r
-CITIB = ci.tib(mem_list, restriction_type = "pairwise", alpha = 0.05, r_cond = r_cond, 
+CITIB = ci.tib(PWID, restriction_type = "pairwise", alpha = 0.05, r_cond = r_cond, 
        t_cond = t_cond, eta_cond = eta_cond, xi_cond = xi_cond, B = 500,
        lb = 0.5, ub = 10, tol = 1, search_step = 30, tasks = -1, verbose = TRUE)
 #> [1] 548.2308
 #> [1] 153
 #> [1] 3060
-#> [1] "start left"
-#> [1] 153.0000 548.2308
+#> [1] "Finding left endpoint of confidence interval using bisection..."
 #> [1] 350.6154
-#> [1] 350.6154 548.2308
 #> [1] 449.4231
-#> [1] 350.6154 449.4231
 #> [1] 400.0192
-#> [1] 400.0192 449.4231
 #> [1] 424.7212
-#> [1] 424.7212 449.4231
 #> [1] 437.0721
-#> [1] 424.7212 437.0721
 #> [1] 430.8966
-#> [1] 424.7212 430.8966
-#> [1] 427.8089
-#> [1] 427.8089 430.8966
-#> [1] 429.3528
-#> [1] 429.3528 430.8966
-#> [1] 430.1247
-#> [1] "start right"
-#> [1]  548.2308 3060.0000
+#> [1] 433.9844
+#> [1] 435.5282
+#> [1] 434.7563
+#> [1] "Finding right endpoint of confidence interval using bisection..."
 #> [1] 1804.115
-#> [1]  548.2308 1804.1154
 #> [1] 1176.173
-#> [1]  548.2308 1176.1731
 #> [1] 862.2019
-#> [1] 548.2308 862.2019
 #> [1] 705.2163
-#> [1] 705.2163 862.2019
 #> [1] 783.7091
-#> [1] 783.7091 862.2019
 #> [1] 822.9555
-#> [1] 783.7091 822.9555
 #> [1] 803.3323
-#> [1] 783.7091 803.3323
 #> [1] 793.5207
-#> [1] 783.7091 793.5207
 #> [1] 788.6149
-#> [1] 783.7091 788.6149
 #> [1] 786.162
-#> [1] 783.7091 786.1620
 #> [1] 784.9356
-#> [1] 783.7091 784.9356
 #> [1] 784.3224
-#> CI 429.3528 784.3224
+#> 1 - 0.05  confidence interval: 433.9844 784.3224
 
-CIPL = ci.pl(mem_list, restriction_type = "pairwise", alpha = 0.05, r_cond = r_cond, 
+CIPL = ci.pl(PWID, restriction_type = "pairwise", alpha = 0.05, r_cond = r_cond, 
        t_cond = t_cond, eta_cond = eta_cond, xi_cond = xi_cond, lb = 0.5,
       ub = 10, tol = 1, verbose = TRUE, xtol_rel = 1e-3, maxeval = 300)
 #> 
@@ -147,36 +123,38 @@ CIPL = ci.pl(mem_list, restriction_type = "pairwise", alpha = 0.05, r_cond = r_c
 #> NLopt solver status: 4 ( NLOPT_XTOL_REACHED: Optimization stopped because 
 #> xtol_rel or xtol_abs (above) was reached. )
 #> 
-#> Number of Iterations....: 22 
+#> Number of Iterations....: 24 
 #> Termination conditions:  xtol_rel: 1e-04 maxeval: 100 
 #> Number of inequality constraints:  0 
 #> Number of equality constraints:    0 
-#> Optimal value of objective function:  -931.053268255555 
-#> Optimal value of controls: 551.2998
+#> Optimal value of objective function:  -931.004106554509 
+#> Optimal value of controls: 573.0189
 #> 
 #> 
-#> [1]  352.1499 -919.8478
-#> [1]  451.7249 -929.0307
-#> [1]  501.5123 -930.5622
-#> [1]  476.6186 -929.8793
-#> [1]  464.1717 -929.5581
-#> [1]  457.9483 -929.3073
-#> [1]  454.8366 -929.1717
-#> [1]  453.2807 -929.1034
-#> [1]  454.0587 -929.1378
-#> [1] 1805.6499 -907.5869
-#> [1] 1178.4749 -921.2863
-#> [1]  864.8873 -927.3271
-#> [1]  708.0936 -929.7870
-#> [1]  786.4905 -928.6553
-#> [1]  747.292 -929.241
-#> [1]  766.8912 -928.9486
-#> [1]  757.0916 -929.1117
-#> [1]  752.1918 -929.0279
-#> [1]  749.7419 -929.1969
-#> [1]  750.9669 -929.1946
-#> [1]  751.5793 -929.1887
-#> [1] 453.2807 752.1918
+#> [1] "Finding left endpoint of confidence interval using bisection..."
+#> Current Value, Current, Objective:  363.0094 -921.4101 
+#> Current Value, Current, Objective:  468.0141 -929.6612 
+#> Current Value, Current, Objective:  415.5118 -926.807 
+#> Current Value, Current, Objective:  441.763 -928.5132 
+#> Current Value, Current, Objective:  454.8886 -929.1556 
+#> Current Value, Current, Objective:  448.3258 -928.8484 
+#> Current Value, Current, Objective:  451.6072 -929.0097 
+#> Current Value, Current, Objective:  453.2479 -929.0642 
+#> Current Value, Current, Objective:  454.0682 -929.1261 
+#> [1] "Finding right endpoint of confidence interval using bisection..."
+#> Current Value, Current, Objective:  1816.509 -906.6307 
+#> Current Value, Current, Objective:  1194.764 -919.0036 
+#> Current Value, Current, Objective:  883.8915 -926.762 
+#> Current Value, Current, Objective:  728.4552 -929.3221 
+#> Current Value, Current, Objective:  806.1733 -928.2319 
+#> Current Value, Current, Objective:  767.3143 -928.5034 
+#> Current Value, Current, Objective:  747.8847 -929.1337 
+#> Current Value, Current, Objective:  757.5995 -928.728 
+#> Current Value, Current, Objective:  752.7421 -928.8461 
+#> Current Value, Current, Objective:  750.3134 -928.9272 
+#> Current Value, Current, Objective:  749.0991 -928.9087 
+#> Current Value, Current, Objective:  748.4919 -928.9231 
+#> 1- 0.05  confidence interval: 453.2479 748.4919
 ```
 
   - Sometimes, one can only have knowledge about the dependence between
@@ -191,11 +169,11 @@ t_cond = c(2, 3)
 eta_cond = c(1, 0.5)
 xi_cond = c(10, 6)
 
-CITIB = ci.tib(mem_list, restriction_type = "pairwise", alpha = 0.05, r_cond = r_cond, 
+CITIB = ci.tib(PWID, restriction_type = "pairwise", alpha = 0.05, r_cond = r_cond, 
        t_cond = t_cond, eta_cond = eta_cond, xi_cond = xi_cond, B = 500,
        lb = 0.5, ub = 10, tol = 1, search_step = 30, tasks = -1, verbose = TRUE)
 
-CIPL = ci.pl(mem_list, restriction_type = "pairwise", alpha = 0.05, r_cond = r_cond, 
+CIPL = ci.pl(PWID, restriction_type = "pairwise", alpha = 0.05, r_cond = r_cond, 
        t_cond = t_cond, eta_cond = eta_cond, xi_cond = xi_cond, lb = 0.5,
       ub = 10, tol = 1, verbose = TRUE, xtol_rel = 1e-3, maxeval = 300)
 ```
@@ -209,12 +187,124 @@ CIPL = ci.pl(mem_list, restriction_type = "pairwise", alpha = 0.05, r_cond = r_c
 <!-- end list -->
 
 ``` r
-CITIB = ci.tib(mem_list, restriction_type = "highest", gamma = 0.1, alpha = 0.05, B = 500,lb = 0.5, ub = 60, tol = 1e-3, search_step = 30, tasks = 2, verbose = TRUE)
+CITIB = ci.tib(PWID, restriction_type = "highest", gamma = 0.1, alpha = 0.05, B = 500,lb = 0.5, ub = 60, tol = 1e-3, search_step = 30, tasks = 2, verbose = TRUE)
 
-CIPL = ci.pl(mem_list, restriction_type = "highest", gamma = 0.1, lb = 0.05, ub = 60, tol = 1e-3, xtol_rel = 1e-3, maxeval = 300, verbose = TRUE)
+CIPL = ci.pl(PWID, restriction_type = "highest", gamma = 0.1, lb = 0.05, ub = 60, tol = 1e-3, xtol_rel = 1e-3, maxeval = 300, verbose = TRUE)
 ```
 
-## Example 2
+## Example: People with a Polish nationality living in the Netherlands in 2009.
+
+Two registers of Statistics Netherlands, the GBA and the HKS on people
+with a Polish nationality living in the Netherlands in 2009. See [Van
+der Heijden, P.G.M., M.J.L.F. Cruy, and G. van Gils. 2011. Aantallen
+Geregistreerde en Nietgeregistreerde Burgers uit MOE-landen die in
+Nederland Verblijven. Rapportage Schattingen 2008 en 2009. The Number of
+Registered and Non-registered Citizens from MOE-countries Residing in
+the Netherlands. Reporting Estimations 2008 and 2009. The Hague:
+Ministry of Social Affairs and
+Employment.](https://www.rijksoverheid.nl/documenten/rapporten/2013/01/14/aantallen-geregistreerde-en-niet-geregistreerde-burgers-uit-moe-landen-die-in-nederland-verblijven)
+
+``` r
+print(Polish)
+#>   GBA HKS     N
+#> 1   1   0 39488
+#> 2   0   1  1445
+#> 3   1   1   374
+```
+
+Considering the Odds Ratio between 2 samples are between 0.5 and 2. Then
+the parameter gamma is log(2) in function *ci.tib* and *ci.pl*.
+
+``` r
+# CITIB = ci.tib(Polish, restriction_type = "highest", gamma = 0.1, alpha = 0.05, 
+#               B = 500,lb = 0.5, ub = 60, tol = 1e-3, search_step = 30, 
+#               tasks = 2, verbose = TRUE)
+
+CIPL = ci.pl(Polish, restriction_type = "highest", gamma = log(2), lb = 0.05, 
+             ub = 60, tol = 1e-3, xtol_rel = 1e-3, maxeval = 300, verbose = TRUE)
+#> [1] "Infeasible!"
+#> 
+#> Call:
+#> nloptr::nloptr(x0 = m0_init, eval_f = eval_l, lb = lb, ub = ub, 
+#>     eval_g_eq = NULL, opts = opts)
+#> 
+#> 
+#> Minimization using NLopt version 2.4.2 
+#> 
+#> NLopt solver status: 4 ( NLOPT_XTOL_REACHED: Optimization stopped because 
+#> xtol_rel or xtol_abs (above) was reached. )
+#> 
+#> Number of Iterations....: 12 
+#> Termination conditions:  xtol_rel: 1e-04 maxeval: 100 
+#> Number of inequality constraints:  0 
+#> Number of equality constraints:    0 
+#> Optimal value of objective function:  -389353.499227705 
+#> Optimal value of controls: 127981.7
+#> 
+#> 
+#> [1] "Finding left endpoint of confidence interval using bisection..."
+#> Current Value, Current, Objective:  65023.52 -389084 
+#> Current Value, Current, Objective:  96502.6 -389336.5 
+#> Current Value, Current, Objective:  112242.1 -389352.6 
+#> Current Value, Current, Objective:  104372.4 -389347.9 
+#> Current Value, Current, Objective:  108307.3 -389350.6 
+#> Current Value, Current, Objective:  110274.7 -389351.9 
+#> Current Value, Current, Objective:  109291 -389351.3 
+#> Current Value, Current, Objective:  109782.8 -389351.6 
+#> Current Value, Current, Objective:  109536.9 -389351.6 
+#> Current Value, Current, Objective:  109659.9 -389351.6 
+#> Current Value, Current, Objective:  109598.4 -389351.6 
+#> Current Value, Current, Objective:  109567.7 -389351.6 
+#> Current Value, Current, Objective:  109552.3 -389351.6 
+#> Current Value, Current, Objective:  109560 -389351.6 
+#> Current Value, Current, Objective:  109556.1 -389351.6 
+#> Current Value, Current, Objective:  109558 -389351.6 
+#> Current Value, Current, Objective:  109557.1 -389351.6 
+#> Current Value, Current, Objective:  109556.6 -389351.6 
+#> Current Value, Current, Objective:  109556.4 -389351.6 
+#> Current Value, Current, Objective:  109556.5 -389351.6 
+#> Current Value, Current, Objective:  109556.5 -389351.6 
+#> Current Value, Current, Objective:  109556.6 -389351.6 
+#> Current Value, Current, Objective:  109556.6 -389351.6 
+#> Current Value, Current, Objective:  109556.6 -389351.6 
+#> Current Value, Current, Objective:  109556.5 -389351.6 
+#> Current Value, Current, Objective:  109556.6 -389351.6 
+#> Current Value, Current, Objective:  109556.6 -389351.6 
+#> [1] "Finding right endpoint of confidence interval using bisection..."
+#> Current Value, Current, Objective:  1303201 -388261.8 
+#> Current Value, Current, Objective:  715591.3 -388653.6 
+#> Current Value, Current, Objective:  421786.5 -389346.4 
+#> Current Value, Current, Objective:  274884.1 -389353.5 
+#> Current Value, Current, Objective:  348335.3 -389353.4 
+#> Current Value, Current, Objective:  385060.9 -389351.4 
+#> Current Value, Current, Objective:  366698.1 -389352.9 
+#> Current Value, Current, Objective:  375879.5 -389352.2 
+#> Current Value, Current, Objective:  380470.2 -389351.8 
+#> Current Value, Current, Objective:  382765.5 -389351.6 
+#> Current Value, Current, Objective:  383913.2 -389351.5 
+#> Current Value, Current, Objective:  383339.4 -389351.6 
+#> Current Value, Current, Objective:  383052.4 -389351.6 
+#> Current Value, Current, Objective:  383195.9 -389351.6 
+#> Current Value, Current, Objective:  383267.6 -389351.6 
+#> Current Value, Current, Objective:  383303.5 -389351.6 
+#> Current Value, Current, Objective:  383321.4 -389351.6 
+#> Current Value, Current, Objective:  383312.5 -389351.6 
+#> Current Value, Current, Objective:  383317 -389351.6 
+#> Current Value, Current, Objective:  383319.2 -389351.6 
+#> Current Value, Current, Objective:  383318.1 -389351.6 
+#> Current Value, Current, Objective:  383318.6 -389351.6 
+#> Current Value, Current, Objective:  383318.4 -389351.6 
+#> Current Value, Current, Objective:  383318.5 -389351.6 
+#> Current Value, Current, Objective:  383318.4 -389351.6 
+#> Current Value, Current, Objective:  383318.5 -389351.6 
+#> Current Value, Current, Objective:  383318.5 -389351.6 
+#> Current Value, Current, Objective:  383318.5 -389351.6 
+#> Current Value, Current, Objective:  383318.5 -389351.6 
+#> Current Value, Current, Objective:  383318.5 -389351.6 
+#> Current Value, Current, Objective:  383318.5 -389351.6 
+#> Current Value, Current, Objective:  383318.5 -389351.6 
+#> 1- 0.05  confidence interval: 109556.6 383318.5
+```
 
 ## Remarks
 
@@ -226,8 +316,3 @@ CIPL = ci.pl(mem_list, restriction_type = "highest", gamma = 0.1, lb = 0.05, ub 
     amount of resamples (B needs to be large, like more than 2000) to
     get stable and precise estimates. Thus, we allow parallel computing
     to draw bootstrap resamples by specifying the parameter “tasks”.
-
-## TODO
-
-  - Test more instances for k = 2, 3, 4 and with different number of
-    pairwise restrictions.
