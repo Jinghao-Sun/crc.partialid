@@ -17,6 +17,8 @@ ci.pl(
   ub = 100,
   tol = 1e-06,
   verbose = F,
+  xtol_rel = 0.001,
+  maxeval = 300,
   ...
 )
 }
@@ -57,6 +59,10 @@ the searching algorithm. Vary lb and ub to avoid local minimum.}
 interval.}
 
 \item{verbose}{A logical. If TRUE, print intermediate information of the computation.}
+
+\item{xtol_rel}{A real number. Control the tolerance when finding the optimum of log-likelihood.}
+
+\item{maxeval}{An integer. Control the max iterations when finding the optimum of log-likelihood.}
 }
 \value{
 (1 - alpha) confidence interval for the population size

@@ -28,15 +28,14 @@ Currently, you can install the development version of **crc.partialid** from [Gi
 # install.packages("devtools")
 devtools::install_github("Jinghao-Sun/crc.partialid")
 ```
-## Example 1
+## Example: People Who Inject Drugs (PWID) in Brussels, Belgium
 
-This is a basic example which shows you how to estimate the population size with **crc.partialid**.
-
-### Import Data
 
 We use 3 capture samples of People Who Inject Drugs (PWID) in Brussels, Belgium, to estimate the total population size of PWID in Brusells. See [Els Plettinckx, Forrest W. Crawford, Jérôme Antoine, Gremeaux Lies, and Luk Van Baelen.
 How many people injected drugs over the last 12 months in Belgium? Estimates based on a
 capture-recapture and multiplier method. Working Paper, 2020.] 
+
+### Import Data
 
 The format of the data needs to be a data.frame or tibble that contains aggregated capture histories. For a
 CRC study with k samples, the data.frame contains one row per observed capture history followed by its frequency. 
@@ -60,11 +59,11 @@ xi_cond = c(5, 5, 5)
 
 We can use *ci.tib* or *ci.pl* to compute 95% (i.e., 1 - alpha) confidence intervals under such constraints. (For the difference of these two methods, see the [methodology paper](https://arxiv.org/abs/2008.00127).) For example,
 ``` r
-CITIB = ci.tib(mem_list, restriction_type = "pairwise", alpha = 0.05, r_cond = r_cond, 
+CITIB = ci.tib(PWID, restriction_type = "pairwise", alpha = 0.05, r_cond = r_cond, 
        t_cond = t_cond, eta_cond = eta_cond, xi_cond = xi_cond, B = 500,
        lb = 0.5, ub = 10, tol = 1, search_step = 30, tasks = -1, verbose = TRUE)
 
-CIPL = ci.pl(mem_list, restriction_type = "pairwise", alpha = 0.05, r_cond = r_cond, 
+CIPL = ci.pl(PWID, restriction_type = "pairwise", alpha = 0.05, r_cond = r_cond, 
        t_cond = t_cond, eta_cond = eta_cond, xi_cond = xi_cond, lb = 0.5,
       ub = 10, tol = 1, verbose = TRUE, xtol_rel = 1e-3, maxeval = 300)
 ```
@@ -76,11 +75,11 @@ t_cond = c(2, 3)
 eta_cond = c(1, 0.5)
 xi_cond = c(10, 6)
 
-CITIB = ci.tib(mem_list, restriction_type = "pairwise", alpha = 0.05, r_cond = r_cond, 
+CITIB = ci.tib(PWID, restriction_type = "pairwise", alpha = 0.05, r_cond = r_cond, 
        t_cond = t_cond, eta_cond = eta_cond, xi_cond = xi_cond, B = 500,
        lb = 0.5, ub = 10, tol = 1, search_step = 30, tasks = -1, verbose = TRUE)
 
-CIPL = ci.pl(mem_list, restriction_type = "pairwise", alpha = 0.05, r_cond = r_cond, 
+CIPL = ci.pl(PWID, restriction_type = "pairwise", alpha = 0.05, r_cond = r_cond, 
        t_cond = t_cond, eta_cond = eta_cond, xi_cond = xi_cond, lb = 0.5,
       ub = 10, tol = 1, verbose = TRUE, xtol_rel = 1e-3, maxeval = 300)
 
@@ -89,14 +88,29 @@ CIPL = ci.pl(mem_list, restriction_type = "pairwise", alpha = 0.05, r_cond = r_c
 - When there isn't much empirical or domain knowledge, restrictions on the highest order interaction term in a loglinear model can be useful to check the robustness, which is forced to be 0 in the usual CRC models. For example, setting $gamma = 0.1$, we thus restrict $\lambda_c$ between -0.1 and 0.1. 
 
 ``` r
-CITIB = ci.tib(mem_list, restriction_type = "highest", gamma = 0.1, alpha = 0.05, B = 500,lb = 0.5, ub = 60, tol = 1e-3, search_step = 30, tasks = 2, verbose = TRUE)
+CITIB = ci.tib(PWID, restriction_type = "highest", gamma = 0.1, alpha = 0.05, B = 500,lb = 0.5, ub = 60, tol = 1e-3, search_step = 30, tasks = 2, verbose = TRUE)
 
-CIPL = ci.pl(mem_list, restriction_type = "highest", gamma = 0.1, lb = 0.05, ub = 60, tol = 1e-3, xtol_rel = 1e-3, maxeval = 300, verbose = TRUE)
+CIPL = ci.pl(PWID, restriction_type = "highest", gamma = 0.1, lb = 0.05, ub = 60, tol = 1e-3, xtol_rel = 1e-3, maxeval = 300, verbose = TRUE)
 ```
 
-## Example 2
+## Example: People with a Polish nationality living in the Netherlands in 2009.
 
+Two registers of Statistics Netherlands, the GBA and the HKS on people with a Polish nationality living in the Netherlands in 2009. See [Van der Heijden,
+P.G.M., M.J.L.F. Cruy, and G. van Gils. 2011. Aantallen Geregistreerde en
+Nietgeregistreerde Burgers uit MOE-landen die in Nederland Verblijven.
+Rapportage Schattingen 2008 en 2009. The Number of Registered and Non-registered
+Citizens from MOE-countries Residing in the Netherlands. Reporting Estimations
+2008 and 2009. The Hague: Ministry of Social Affairs and Employment.](https://www.rijksoverheid.nl/documenten/rapporten/2013/01/14/aantallen-geregistreerde-en-niet-geregistreerde-burgers-uit-moe-landen-die-in-nederland-verblijven)
 
+```{r}
+print(Polish)
+```
+
+``` {r}
+# CITIB = ci.tib(Polish, restriction_type = "highest", gamma = 0.1, alpha = 0.05, B = 500,lb = 0.5, ub = 60, tol = 1e-3, search_step = 30, tasks = 2, verbose = TRUE)
+
+CIPL = ci.pl(Polish, restriction_type = "highest", gamma = log(2), lb = 0.05, ub = 60, tol = 1e-3, xtol_rel = 1e-3, maxeval = 300, verbose = TRUE)
+```
 
 
 ## Remarks
@@ -104,7 +118,3 @@ CIPL = ci.pl(mem_list, restriction_type = "highest", gamma = 0.1, lb = 0.05, ub 
 - Varying the values of parameters "lb" and "ub" to avoid being trapped in local minima.
 - Varying optimization parameters "tol", "xtol_rel", and "maxeval" to improve precison and stability of estimation.
 - Test Inversion Bootstrap Confidence Interval (ci.tib) needs a large amount of resamples (B needs to be large, like more than 2000) to get stable and precise estimates. Thus, we allow parallel computing to draw bootstrap resamples by specifying the parameter "tasks".
-
-## TODO
-
-- Test more instances for k = 2, 3, 4 and with different number of pairwise restrictions.
